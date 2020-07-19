@@ -118,6 +118,13 @@ $ k create --edit -f svc.yaml
 --Delete all pods
 k delete po --all
 
+--If some fields you don't remember then use kubectl explai command
+$ kubectl explain deploy.spec.strategy
+
+--You can use -h command in case of help for some command
+$ kubectl rollout -h
+
+
 ```
 
 # References:
