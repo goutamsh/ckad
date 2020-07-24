@@ -127,6 +127,230 @@ $ kubectl rollout -h
 
 ```
 
+## Few kubernetes resource fields to remember for configuration
+
+Command:
+
+$ k run busybox --image=busybox --restart=Never --labels='app=busybox' --limits='cpu=1,memory=1000Mi' --requests='cpu=200m,memory=512Mi' --dry-run -o yaml --env MESSAGE='HelloGlasgow' -- sh -c '(while true; do date ; sleep 100; done) > /opt/log/date.log' > pod.yaml
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    app: busybox
+  name: busybox
+spec:
+  volumes:
+    - name: vol
+      emptyDir: {}
+  containers:
+  - args:
+    - sh
+    - -c
+    - (while true; do date ; sleep 100; done) > /opt/log/date.log
+    env:
+    - name: MESSAGE
+      value: Hello Glasgow
+    image: busybox
+    name: busybox
+    resources:
+      limits:
+        cpu: "1"
+        memory: 1000Mi
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    volumeMounts:
+      - name: vol
+        mountPath: /opt/log
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
+
+
+---
+
+
+$ k taint node minikube testKey=testValue:NoSchedule
+
+----
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    app: busybox
+  name: busybox
+spec:
+  tolerations:
+    - key: testKey
+      value: testValue
+      effect: NoSchedule
+    - key: testKey1
+      operator: Exists
+      effect: NoSchedule
+  nodeSelector:
+    kubernetes.io/hostname: minikube
+  volumes:
+    - name: vol
+      emptyDir: {}
+  containers:
+  - args:
+    - sh
+    - -c
+    - (while true; do date ; sleep 100; done) > /opt/log/date.log
+    env:
+    - name: MESSAGE
+      value: Hello Glasgow
+    image: busybox
+    name: busybox
+    resources:
+      limits:
+        cpu: "1"
+        memory: 1000Mi
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    volumeMounts:
+      - name: vol
+        mountPath: /opt/log
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
+----
+
+
+$ k create cm config-map --from-literal=APP_NAME='My app'
+
+k create secret generic my-secret --from-literal=PASSWORD=pass
+
+---
+my-pv.yaml
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /tmp/my-pv
+
+---
+
+my-pvc.yaml
+
+----
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 500Mi
+  storageClassName: ""
+
+--------
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    app: busybox
+  name: busybox
+spec:
+  tolerations:
+    - key: testKey
+      value: testValue
+      effect: NoSchedule
+    - key: testKey1
+      operator: Exists
+      effect: NoSchedule
+  nodeSelector:
+    kubernetes.io/hostname: minikube
+  volumes:
+    - name: vol
+      emptyDir: {}
+    - name: hostpath-vol
+      hostPath:
+        path: /temp/busybox
+    - name: cm-vol
+      configMap:
+              name: config-map
+    - name: secret-vol
+      secret:
+              secretName: my-secret
+    - name: pv-vol
+      persistentVolumeClaim:
+              claimName: my-claim
+  containers:
+  - args:
+    - sh
+    - -c
+    - (while true; do date ; sleep 100; done) > /opt/log/date.log
+    envFrom:
+      - configMapRef:
+          name: config-map
+    env:
+    - name: MESSAGE
+      value: Hello Glasgow
+    - name: APP_NAME_FROM_CONFIG
+      valueFrom:
+        configMapKeyRef:
+          name: config-map
+          key: APP_NAME
+    - name: PASS_FROM_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: my-secret
+          key: PASSWORD
+    image: busybox
+    name: busybox
+    resources:
+      limits:
+        cpu: "1"
+        memory: 1000Mi
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    volumeMounts:
+      - name: vol
+        mountPath: /opt/log
+      - name: hostpath-vol
+        mountPath: /opt/busybox/hostPath
+      - name: cm-vol
+        mountPath: /opt/busybox/cm
+      - name: secret-vol
+        mountPath: /opt/busybox/secret
+      - name: pv-vol
+        mountPath: /opt/busybox/my-pv
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
+---
+
+
+TO DO:
+
+- node affinity
+- readynessprobe and livenessprobe
+- etc
+
 # References:
 
 1.  https://www.linkedin.com/pulse/my-ckad-exam-experience-atharva-chauthaiwale/
