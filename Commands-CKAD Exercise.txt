@@ -1,0 +1,1759 @@
+https://github.com/dgkanatsios/CKAD-exercises
+
+Core Concepts:
+
+------------------
+
+ 
+
+$ history
+
+    1  minikube version
+
+    2  minikube start --wait=false
+
+    3  source <(kubectl completion bash)
+
+    4  echo "source <(kubectl completion bash)" >> ~/.bashrc
+
+    5  cat ~/.bashrc
+
+    6  alias k=kubectl
+
+    7  echo "alias k=kubectl" >> ~/.bashrc
+
+    8  complete -F __start_kubectl k
+
+    9  echo "complete -F __start_kubectl k" >> ~/.bashrc
+
+   10  cat ~/.bashrc
+
+   11  k create namespace mynamespace
+
+   12  k get ns
+
+   13  k -n mynamespace run nginx --image=nginx --restart=Never --dry-run -o yaml
+
+   14  k -n mynamespace run nginx --image=nginx --restart=Never
+
+   15  k -n get port-forward
+
+   16  k -n get po
+
+   17  k -n mynamespace get pod
+
+   18  k -n mynamespace run nginx2 --image=nginx --restart=Never --dry-run=client -o yaml> pod.yaml
+
+   19  cat pod.yaml
+
+   20  k -n mynamespace run nginx2 --image=nginx --restart=Never --dry-run -o yaml > pod.yaml
+
+   21  cat pod.yaml
+
+   22  k apply -f pod.yaml -n mynamespace
+
+   23  k -n mynamespace get pod
+
+   24  history
+
+   25  k run busybox --image=busybox --restart=Never --dry-run -o yaml -- env
+
+   26  k run busybox --image=busybox --restart=Never --command=env --dry-run -o yaml
+
+   27  k run busybox --image=busybox --restart=Never --command "env" --dry-run -o yaml
+
+   28  k run busybox --image=busybox --restart=Never --command "env"
+
+   29  k get po
+
+   30  k get po -w
+
+   31  k logs busybox
+
+   32  k run busybox --image=busybox --restart=Never --command --dry-run -o yaml -- env
+
+   33  k run busybox2 --image=busybox --restart=Never --command  -- env
+
+   34  k get po
+
+   35  k logs busybox2
+
+   36  k run busybox3 --image=busybox --restart=Never --command --dry-run -o yaml -- env > busybox-pod.yaml
+
+   37  cat busybox-pod.yaml
+
+   38  k apply -f busybox-pod.yaml
+
+   39  k get pod
+
+   40  k logs busybox3
+
+   41  k create namespace myns --dry-run -o yaml
+
+   42  k create namespace myns --dry-run -o yaml > namespace.yaml
+
+   43  k get ns
+
+   44  k apply -f namespace.yaml
+
+   45  k get ns
+
+   46  cat namespace.yaml
+
+   47  k create quota myrq --hard=cpu=1,memory=1G,pods=2 --dry-run -o yaml
+
+   48  k get pod --all-namespaces
+
+   49  k run nginx --image=nginx
+
+   50  k delete deployments.apps nginx
+
+   51  k get po
+
+   52  k run nginx --image=nginx --restart=Never
+
+   53  k expose pod nginx --port=80 -o yaml --dry-run
+
+   54  k expose pod nginx --port=80 -o yaml
+
+   55  k get all
+
+   56  curl http://10.104.130.138
+
+   57  k delete pod nginx
+
+   58  k delete svc nginx
+
+   59  k run nginx --image=nginx --restart=Never --port=80 -o yaml --dry-run
+
+   60  k run nginx --image=nginx --restart=Never --port=80 -o yaml
+
+   61  k get pod
+
+   62  k get pod -o wide
+
+   63  curl http://172.18.0.6
+
+   64  k set image pod nginx nginx=nginx:1.7.1
+
+   65  k get po -w
+
+   66  k describe pod nginx
+
+   67  k set image pod nginx nginx=nginx:1.7.2
+
+   68  k get po -w
+
+   69  k describe pod nginx
+
+   70  k set image pod nginx nginx=nginx:1.7.1
+
+   71  k get po -w
+
+   72  k describe pod nginx
+
+   73  k set image pod nginx nginx=nginx:1.7.1
+
+   74  k get pod
+
+   75  k edit pod nginx
+
+   76  k get pod
+
+   77*
+
+   78  k get pod
+
+   79  k describe pod nginx
+
+   80  k set image pod nginx nginx=nginx:1.7.1
+
+   81  k describe pod nginx
+
+   82  k get pod
+
+   83  k delete pod nginx
+
+   84  k run nginx --image=nginx --restart=Never --port=80 -o yaml
+
+   85  k get pod
+
+   86  k get pod -o wide
+
+   87  k run busy4 --image=busybox --restart=Never -it
+
+   88  k get pod
+
+   89  k run busy5 --image=busybox --restart=Never -it --rm -- wget -O- 172.18.0.6
+
+   90  k get pod
+
+   91  k get pod nginx -o yaml
+
+   92  k describe pod nginx
+
+   93  k logs nginx
+
+   94  k get pod
+
+   95  k logs nginx --previous
+
+   96  k set image pod nginx nginx=nginx:1.7.1
+
+   97  k get pod
+
+   98  k logs nginx
+
+   99  k logs nginx --previous
+
+  100  k exec nginx -- sh
+
+  101  k exec nginx -it -- sh
+
+  102  k exec -it nginx -- sh
+
+  103  k run busy-hello --image=busybox --restart=Never --command -- echo "hello world"
+
+  104  k get pod
+
+  105  k logs busy-hello
+
+  106  k delete pod busy-hello
+
+  107  k run busy-hello --image=busybox --restart=Never -it --command -- sh -c 'echo hello world'
+
+  108  k get pod
+
+  109  k delete pod busy-hello
+
+  110  k run busy-hello --image=busybox --restart=Never -it --rm --command -- sh -c 'echo hello world'
+
+  111  k get pod
+
+  112  k run nginx-with-env --image=nginx --restart=Never --env=var1=val1 -o yaml --dry-run
+
+  113  k run nginx-with-env --image=nginx --restart=Never --env=var1=val1 --it --command -- env var1
+
+  114  k run nginx-with-env --image=nginx --restart=Never --env=var1=val1 -it --command -- env var1
+
+  115  k get pod
+
+  116  k delete pod nginx-with-env
+
+  117  k get all
+
+  118  history
+
+  119  k run nginx-with-env --image=nginx --restart=Never --env=var1=val1 -it --command -- sh -c 'env'
+
+  120  k delete pod nginx-with-env
+
+  121  k run nginx-with-env --image=nginx --restart=Never --env=var1=val1 -it --command -- sh -c 'env var1'
+
+  122  k run nginx-with-env --image=nginx --restart=Never --env=var1=val1 -it --rm --command -- env
+
+  123  k delete po nginx-with-env
+
+  124  k run nginx-with-env --image=nginx --restart=Never --env=var1=val1 -it --rm --command -- env
+
+  125  history
+
+$
+
+ 
+
+----------
+
+Multi-container pod
+
+----------------
+
+ 
+
+ 
+
+$ history
+
+    1  minikube version
+
+    2  minikube start --wait=false
+
+    3  ource <(kubectl completion bash)
+
+    4  source <(kubectl completion bash)
+
+    5  echo "source <(kubectl completion bash)" >> ~/.bashrc
+
+    6  alias k=kubectl
+
+    7  echo "alias k=kubectl" >> ~/.bashrc
+
+    8  complete -F __start_kubectl k
+
+    9  echo "complete -F __start_kubectl k" >> ~/.bashrc
+
+   10  k run pod-with-2-container --image=busybox --restart=Never --dry-run -o yaml --command -- sh -c 'echo hello; sleep 3600'
+
+   11  k run pod-with-2-container --image=busybox --restart=Never --dry-run -o yaml --command -- sh -c 'echo hello; sleep 3600'> pod1.yaml
+
+   12  vi pod1.yaml
+
+   13  k apply -f pod1.yaml
+
+   14  k get all
+
+   15  k exec pod-with-2-container -c busy2 -it -- sh
+
+   16  k get all
+
+   17  k exec pod-with-2-container -c busy2 -- ls
+
+   18  k logs pod-with-2-container --all-containers
+
+   19  k get po
+
+   20  history
+
+   21  k delete pod pod-with-2-container
+
+   22  k run nginx --image=nginx --restart=Never --expose=80  --dry-run -o yaml
+
+   23  k run nginx --image=nginx --restart=Never --expose="80"  --dry-run -o yaml
+
+   24  k run nginx --image=nginx --restart=Never --port=80  --dry-run -o yaml
+
+   25  k run nginx --image=nginx --restart=Never --port=80  --dry-run -o yaml > nginx.yaml
+
+   26  vi nginx.yaml
+
+   27  k apply -f nginx.yaml
+
+   28  k get pod
+
+   29  k get po -o wide
+
+   30  k run busy --image=busybox -it --rm --restart=Never --command -- wget -O- 172.18.0.4
+
+   31  history
+
+$
+
+ 
+
+----------
+
+Pod design
+
+----------
+
+$ history
+
+    1  minikube version
+
+    2  minikube start --wait=false
+
+    3  source <(kubectl completion bash)
+
+    4  echo "source <(kubectl completion bash)" >> ~/.bashrc
+
+    5  alias k=kubectl
+
+    6  echo "alias k=kubectl" >> ~/.bashrc
+
+    7  complete -F __start_kubectl k
+
+    8  echo "complete -F __start_kubectl k" >> ~/.bashrc
+
+    9  k run nginx1 --image=nginx --restart=Never --labels=app=v1 --dry-run -o yaml
+
+   10  k run nginx1 --image=nginx --restart=Never --labels=app=v1
+
+   11  k run nginx2 --image=nginx --restart=Never --labels=app=v1
+
+   12  k run nginx3 --image=nginx --restart=Never --labels=app=v1
+
+   13  k get all
+
+   14  k get pod --show-labels
+
+   15  k label pod nginx2 app=v2
+
+   16  k label pod nginx2 app=v2 --overwrite true
+
+   17  k label pod nginx2 --overwrite true app=v2
+
+   18  k get pod --show-labels
+
+   19  k label pod nginx2 app=v1
+
+   20  k label pod nginx2 app=v1 --overwrite
+
+   21  k get pod --show-labels
+
+   22  k label pod nginx2 app=v2 --overwrite
+
+   23  k get pod --label-columns app
+
+   24  k get pod -l app=v2
+
+   25  k get pod --selector app=v2
+
+   26  k get pod --selector=app=v2
+
+   27  k get pod -l 'app in (v2)'
+
+   28  k get pod --selector 'app in (v2)'
+
+   29  k label pod nginx1,nginx2,nginx3 app-
+
+   30  k label pod nginx1 app-
+
+   31  k label pod nginx2 app-
+
+   32  k label pod nginx3 app-
+
+   33  k get po --show-labels
+
+   34  k label po nginx1 nginx2 nginx3 app=v1
+
+   35  k get po --show-labels
+
+   36  k label po nginx1 nginx2 nginx3 app-
+
+   37  k get po --show-labels
+
+   38  k run nginx4 --image=nginx --restart=Never --dry-run -o yaml
+
+   39  k run nginx4 --image=nginx --restart=Never --dry-run -o yaml > nignx4.yaml
+
+   40  vi ngi
+
+   41  vi nignx4.yaml
+
+   42  k apply -f nignx4.yaml
+
+   43  k get pod
+
+   44  k get nodes --show-
+
+   45  k get nodes --show-labels
+
+   46  vi nginx4.yaml
+
+   47  vi nignx4.yaml
+
+   48  cat nignx4.yaml
+
+   49  k explain po.spex
+
+   50  k explain po.spec
+
+   51  k annotate pod nginx1 nginx2 nginx3 description='my description'
+
+   52  k describe po nginx1
+
+   53  k describe pod nginx1
+
+   54  k describe pod nginx1 | grep annotation
+
+   55  k describe pod nginx1 | grep -i annotation
+
+   56  k describe pod nginx1 | grep -i annotat
+
+   57  k annotate po nginx1 nginx2 nginx3 description-
+
+   58  k describe pod nginx1 | grep -i annotat
+
+   59  k delete po --all
+
+   60  history
+
+   61  k run nginx --image=nginx:1.7.8 --replicas=2 --port=80 --dry-run -o yaml
+
+   62  k run nginx --image=nginx:1.7.8 --replicas=2 --port=80
+
+   63  k get all
+
+   64  k delete po nginx-c7479cf44-
+
+   65  k delete deployments.apps nginx
+
+   66  k create deployment nginx --image=nginx:1.7.8 --dry-run=client -o yaml
+
+   67  k create deployment nginx --image=nginx:1.7.8 --dry-run -o yaml
+
+   68  k create deployment nginx --image=nginx:1.7.8 --dry-run -o yaml > deploy.yaml
+
+   69  vi deploy.yaml
+
+   70  k apply -f deploy.yaml
+
+   71  vi deploy.yaml
+
+   72  k apply -f deploy.yaml
+
+   73  vi deploy.yaml
+
+   74  k apply -f deploy.yaml
+
+   75  k get all
+
+   76  k create deployment nginx --image=nginx:1.7.8 --replica=2 --dry-run -o yaml
+
+   77  k create deployment nginx --image=nginx:1.7.8 --replicas=2 --dry-run -o yaml
+
+   78  k create deploy nginx --image=nginx:1.7.8 --replicas=2 --dry-run -o yaml
+
+   79  kubectl create deploy nginx --image=nginx:1.7.8 --replicas=2 --port=80 --dry-run -o yaml
+
+   80  k get deployments.apps nginx -o yaml
+
+   81  k get pod nginx-64f4c47bf8-gfncg -o yaml
+
+   82  k get all
+
+   83  k describe deployments.apps nginx
+
+   84  k get rs nginx-64f4c47bf8 -o yaml
+
+   85  k describe rs nginx-64f4c47bf8
+
+   86  k get po nginx-64f4c47bf8-gfncg -o yaml
+
+   87  k get deployments.apps --show-labels
+
+   88  k rollout status deployment nginx
+
+   89  k rollout history deployment nginx
+
+   90  k set image deployment nginx
+
+   91  k set image deployment nginx nginx=nginx:1.7.9
+
+   92  k get po
+
+   93  k rollout status deployment nginx
+
+   94  k get all
+
+   95  k rollout history deployment nginx
+
+   96  k describe deployments.apps nginx
+
+   97  k set image deploy nginx ngiwee-dgsd
+
+   98  k rollout status deployment nginx
+
+   99  k rollout history deployment nginx
+
+  100  k describe deployments.apps nginx
+
+  101  k rollout undo deployment nginx
+
+  102  k get all
+
+  103  k rollout status deployment nginx
+
+  104  k get all
+
+  105  k describe deployments.apps nginx
+
+  106  k set image deploy nginx nginx=nginx:1.97
+
+  107  k rollout status deployment nginx
+
+  108  k rollout status deployment nginx -w
+
+  109  k rollout status deployment nginx
+
+  110  k describe deployments.apps nginx
+
+  111  k get pod
+
+  112  k describe pod nginx-7668dd9d9c-4hk86
+
+  113  k get all
+
+  114  k rollout history deployment nginx
+
+  115  k rollout status deployment nginx
+
+  116  k rollout undo deployment nginx --to-revision=2
+
+  117  k get all
+
+  118  k rollout status deployment nginx
+
+  119  k get all
+
+  120  k describe deployments.apps nginx
+
+  121  k get all
+
+  122  k rollout history deployment nginx
+
+  123  k rollout undo deployment nginx --to-revision=2
+
+  124  k rollout undo deployment nginx --to-revision=3
+
+  125  k rollout history deployment nginx
+
+  126  k rollout undo deployment nginx --to-revision=3
+
+  127  k rollout undo deployment nginx --to-revision=4
+
+  128  k rollout history deployment nginx
+
+  129  k rollout history deployment nginx --revision=5
+
+  130  k rollout history deployment nginx --revision=6
+
+  131  k rollout history deployment nginx --revision=7
+
+  132  history
+
+$
+
+ 
+
+$ history
+
+    1  minikube version
+
+    2  minikube start --wait=false
+
+    3  source <(kubectl completion bash)
+
+    4  echo "source <(kubectl completion bash)" >> ~/.bashrc
+
+    5  alias k=kubectl
+
+    6  echo "alias k=kubectl" >> ~/.bashrc
+
+    7  complete -F __start_kubectl k
+
+    8  echo "complete -F __start_kubectl k" >> ~/.bashrc
+
+    9  k create job pi --image=perl --command --dry-run -o yaml -- sh -c 'perl -Mbignum=bpi -wle 'print bpi(2000)''
+
+   10  k create job pi --image=perl --command --dry-run -o yaml -- perl -Mbignum=bpi -wle 'print bpi(2000)'
+
+   11  k create job pi --image=perl --dry-run -o yaml -- perl -Mbignum=bpi -wle 'print bpi(2000)'
+
+   12  k create job pi --image=perl  -- perl -Mbignum=bpi -wle 'print bpi(2000)'
+
+   13  k get all
+
+   14  k get pod
+
+   15  k get pod -w
+
+   16  k describe po pi-xhq75
+
+   17  k logs pi-xhq75
+
+   18  k delete jobs.batch pi
+
+   19  k create job pi --image=perl --command --dry-run -o yaml -- sh -c 'perl -Mbignum=bpi -wle 'print bpi(2000)''
+
+   20  k create job pi --image=perl --dry-run -o yaml -- sh -c perl -Mbignum=bpi -wle 'print bpi(2000)'
+
+   21  k create job pi --image=perl  -- sh -c perl -Mbignum=bpi -wle 'print bpi(2000)'
+
+   22  k logs pi-l57tm
+
+   23  k get pod
+
+   24  k logs pi-l57tm
+
+   25  k get pod
+
+   26  k describe pod pi-l57tm
+
+   27  perl
+
+   28  sh -c 'perl -Mbignum=bpi -wle print bpi(2000)'
+
+   29  sh -c 'perl -Mbignum=bpi -wle 'print bpi(2000)''
+
+   30  perl -Mbignum=bpi -wle 'print bpi(2000)'
+
+   31  k logs pi-l57tm
+
+   32  k delete jobs.batch pi
+
+   33  k create job pi --image=perl --dry-run -o yaml -- perl -Mbignum=bpi -wle 'print bpi(2000)'
+
+   34  k create job pi --image=perl --dry-run -o yaml -- sh -c perl -Mbignum=bpi -wle 'print bpi(2000)'
+
+   35  k create job pi --image=perl  -o yaml -- perl -Mbignum=bpi -wle 'print bpi(2000)'
+
+   36  k logs pi-wjdx6 pi
+
+   37  k logs pi-wjdx6
+
+   38  k get pod
+
+   39  k get jobs.batch
+
+   40  k logs jo/pi
+
+   41  k logs job/pi
+
+   42  k delete jobs.batch pi
+
+   43  k create job busy --image=busybox -- sh -c 'echo hello;sleep 30;echo world'
+
+   44  k get all
+
+   45  k logs job/busy
+
+   46  k logs job/busy -l
+
+   47  k logs job/busy -f
+
+   48  k get all
+
+   49  k logs busy-8h4sv
+
+   50  k logs busy-8h4sv -f
+
+   51  k logs job/busy
+
+   52  k get jobs.batch busy
+
+   53  k describe jobs.batch busy
+
+   54  k logs job/busy
+
+   55  k delete jobs.batch busy
+
+   56  k create job busy --image=busybox --dry-run -o yaml -- sh -c 'echo hello;sleep 60; echo world'
+
+   57  k create job busy --image=busybox --dry-run -o yaml -- sh -c 'echo hello;sleep 60; echo world' > job1.yaml
+
+   58  vi job1.yaml
+
+   59  k apply -f job1.yaml
+
+   60  k get all
+
+   61  k get po -w
+
+   62  k logs busy-8qrk8
+
+   63  k logs busy-8qrk8 -f
+
+   64  k get po -w
+
+   65  k logs busy-8qrk8 -f
+
+   66  k get po -w
+
+   67  k logs busy-8qrk8 -f
+
+   68  k get po -w
+
+   69  k get po
+
+   70  k get all
+
+   71  k logs job/busyt
+
+   72  k logs job/busy
+
+   73  k logs job/busy --previous
+
+   74  k delete jobs.batch busy
+
+   75  k create job busy --image=busybox --dry-run -o yaml -- sh -c 'echo hello;sleep 60; echo world' > job1.yaml
+
+   76  vi job1.yaml
+
+   77  k apply -f job1.yaml
+
+   78  k get all
+
+   79  k get po -w
+
+   80  k get ll
+
+   81  k get all
+
+   82  k logs job/busy -f
+
+   83  k get pjo
+
+   84  k get po
+
+   85  k get jobs.batch
+
+   86  k delete jobs.batch busy
+
+   87  k create job busy --image=busybox --dry-run -o yaml -- sh -c 'echo hello;sleep 60; echo world' > job1.yaml
+
+   88  vi job1.yaml
+
+   89  k apply -f job1.yaml
+
+   90  k get all
+
+   91  k logs job/busy
+
+   92  k logs job/busy -f
+
+   93  k get pod
+
+   94  k get pod -w
+
+   95  k logs job/busy -f
+
+   96  k get po
+
+   97  k get jobs.batch
+
+   98  k describe jobs.batch busy
+
+   99  k create deployment nginx --image=nginx:1.7.8 --record=true
+
+  100  k create deployment nginx --image=nginx:1.7.8
+
+  101  k rollout status deployment nginx
+
+  102  k get all
+
+  103  k rollout history deployment nginx
+
+  104  k --record=true set image deploy nginx nginx=nginx:1.7.9
+
+  105  k rollout history deployment nginx
+
+  106  k rollout status deployment nginx
+
+  107  k get all
+
+  108  k logs deploy/nginx
+
+  109  k logs nginx-55fbd9fd6d-scdxk
+
+  110  k create cronjob busy-cron --image=busybox --schedule="*/1 * * * *" -- sh -c 'date; echo Hello from the Kubernetes cluster'
+
+  111  k get jobs.batch
+
+  112  k get jobs.batch -w
+
+  113  k get ll
+
+  114  k get all
+
+  115  k logs cron/busy-cron
+
+  116  k logs cj/busy-cron
+
+  117  k logs cronjob/busy-cron
+
+  118  k get cj
+
+  119  k get all
+
+  120  k get pod busy-cron-1614583260-npq66
+
+  121  k logs busy-cron-1614583260-npq66
+
+  122  k get jobs.batch -w
+
+  123  k get jobs.batch
+
+  124  k delete cj busy-cron
+
+  125  k create cronjob busy-cron --image=busybox --schedule="*/1 * * * *" --dry-run -o yaml -- sh -c  'date; echo Hello from the Kubernetes cluster'
+
+  126  k create cronjob busy-cron --image=busybox --schedule="*/1 * * * *" --dry-run -o yaml -- sh -c  'date; echo Hello from the Kubernetes cluster' > cj.yaml
+
+  127  vi cj.yaml
+
+  128  k apply -f cj.yaml
+
+  129  vi cj.yaml
+
+  130  history
+
+$
+
+ 
+
+-----------------------
+
+Configuration
+
+-----------------------
+
+ 
+
+$ history
+
+    1  minikube version
+
+    2  minikube start --wait=false
+
+    3  source <(kubectl completion bash)
+
+    4  exho "source <(kubectl completion bash)" >> ~/.bashrc
+
+    5  echo "source <(kubectl completion bash)" >> ~/.bashrc
+
+    6  source <(kubectl completion1 bash)
+
+    7  source <(kubectl completion bash)
+
+    8  echo "source <(kubectl completion bash)" >> ~/.bashrc
+
+    9  alias k=kubectl
+
+   10  echo "alias k=kubectl" >> ~/.bashrc
+
+   11  complete -F __start_kubectl k
+
+   12  echo "complete -F __start_kubectl k" >> ~/.bashrc
+
+   13  k create configmap config --from-literal=foo=lala,foo2=lolo
+
+   14  k describe cm config
+
+   15  k delete cm config
+
+   16  k create configmap config --from-literal=foo=lala --from-literal=foo2=lolo
+
+   17  k describe cm config
+
+   18  k get cm
+
+   19  k get cm -o yaml
+
+   20  k describe cm config
+
+   21  echo -e "foo3=lili\nfoo4=lele" > config.txtecho -e "foo3=lili\nfoo4=lele" > config.txtecho -e "foo3=lili\nfoo4=lele" > config.txtecho -e "foo3=lili\nfoo4=lele" > config.txt
+
+   22  echo -e "foo3=lili\nfoo4=lele" > config.txt
+
+   23  cat config.txt
+
+   24  k create cm config2 --from-file=config.txt
+
+   25  k describe cm config2
+
+   26  k get cm config2 -o yaml
+
+   27  echo --help
+
+   28  echo -h
+
+   29  echo -e
+
+   30  echo -e "var1=val1\n# this is a comment\n\nvar2=val2\n#anothercomment" > config.env
+
+   31  cat config.env
+
+   32  k create cm config3 --from-env-file=config.env
+
+   33  k describe cm config3
+
+   34  k get cm config3 -o yaml
+
+   35  echo -e "var3=val3\nvar4=val4" > config4.txt
+
+   36  cat config4.txt
+
+   37  k create cm config4 --from-file=special=config4.txt
+
+   38  k describe cm config4
+
+   39  k create cm option --from-literal=var5=val5
+
+   40  k run nginx --image=nginx --restart=Never --env option=1 --dry-run -o yaml
+
+   41  k run nginx --image=nginx --restart=Never --env option=1 --dry-run -o yaml > nginx.yaml
+
+   42  cat nginx.yaml
+
+   43  vi nginx.yaml
+
+   44  k apply -f nginx.yaml
+
+   45  k get po
+
+   46  k get po -w
+
+   47  k exec -it nginx -- sh
+
+   48  k get po
+
+   49  k exec nginx -- env | grep option
+
+   50  k create cm anotherone --from-literal=var6=val6 --from-literal=var7=val7
+
+   51  k run nginx-anotheone --image=nginx --restart=Never --dry-run -o yaml > nginx-anotherone.yaml
+
+   52  cat nginx-anotherone.yaml
+
+   53  vi nginx-anotherone.yaml
+
+   54  k apply -f nginx-anotherone.yaml
+
+   55  k get po
+
+   56  k get po -w
+
+   57  k exec -it nginx-anotheone -- env
+
+   58  k create cm cmvolume --from-literal=var8=val8 --from-literal=var9=val9
+
+   59  k run nginx-cmvolume --image=nginx --restart=Never --dry-run -o yaml
+
+   60  k run nginx-cmvolume --image=nginx --restart=Never --dry-run -o yaml > nginx-cmvolume.yaml
+
+   61  cat nginx-cmvolume.yaml
+
+   62  vi nginx-cmvolume.yaml
+
+   63  k apply -f nginx-cmvolume.yaml
+
+   64  k get po -w
+
+   65  k exec -it nginx-cmvolume -- ls /etc/lala
+
+   66  k exec -it nginx-cmvolume -- hs
+
+   67  k exec -it nginx-cmvolume -- sh
+
+   68  hostname
+
+   69  history
+
+   70  k run nginx-security-context --image=nginx --restart=Never --dry-run -o yaml > nginx-security=context.yaml
+
+   71  vi nginx-security\=context.yaml
+
+   72  k apply -f nginx-security\=context.yaml
+
+   73  k get pod -w
+
+   74  k describe po nginx-security-context
+
+   75  k run nginx-capability --image=nginx --restart=Never --dry-run -o yaml > nginx-capability.yaml
+
+   76  vi nginx-capability.yaml
+
+   77  k apply -f nginx-capability.yaml
+
+   78  k get po -w
+
+   79  k run nginx-limit --image=nginx --restart=Never --limits --dry-run -o yaml
+
+   80  k run nginx-limit --image=nginx --restart=Never --limits='cpu=100m,memory=256Mi' --dry-run -o yaml
+
+   81  k run nginx-limit --image=nginx --restart=Never --requests='cpu=100m,memory=256Mi'   --dry-run -o yaml
+
+   82  k run nginx-limit --image=nginx --restart=Never --requests='cpu=100m,memory=256Mi' --limits='cpu=200m,memory=512Mi'  --dry-run -o yaml
+
+   83  k run nginx-limit --image=nginx --restart=Never --requests='cpu=100m,memory=256Mi' --limits='cpu=200m,memory=512Mi' 
+
+   84  k get po -w
+
+$ k create secret
+
+docker-registry  generic          tls             
+
+$ k create secret
+
+docker-registry  generic          tls             
+
+$ k create secret generic mysecret --from-literal=password=mypass
+
+secret/mysecret created
+
+$ k get secrets
+
+NAME                  TYPE                                  DATA   AGE
+
+default-token-8nlwk   kubernetes.io/service-account-token   3      46m
+
+mysecret              Opaque                                1      3s
+
+$ k describe secrets
+
+default-token-8nlwk  mysecret            
+
+$ k describe secrets mysecret
+
+Name:         mysecret
+
+Namespace:    default
+
+Labels:       <none>
+
+Annotations:  <none>
+
+ 
+
+Type:  Opaque
+
+ 
+
+Data
+
+====
+
+password:  6 bytes
+
+$ k get secrets mysecret -o yaml
+
+apiVersion: v1
+
+data:
+
+  password: bXlwYXNz
+
+kind: Secret
+
+metadata:
+
+  creationTimestamp: "2021-03-06T22:16:34Z"
+
+  name: mysecret
+
+  namespace: default
+
+  resourceVersion: "6550"
+
+  selfLink: /api/v1/namespaces/default/secrets/mysecret
+
+  uid: 3747ea4b-9821-4913-85f6-373516c0d43c
+
+type: Opaque
+
+$ echo bXlwYXNz | base64
+
+Ylhsd1lYTnoK
+
+$ echo bXlwYXNz | base64 decode
+
+base64: decode: No such file or directory
+
+$ base64 decode
+
+base64: decode: No such file or directory
+
+$ echo bXlwYXNz | base64 -d
+
+mypass$ echo -n admin > username
+
+$ k create secret generic --from-file=username
+
+error: exactly one NAME is required, got 0
+
+See 'kubectl create secret generic -h' for help and examples
+
+$ k create secret generic mysecret2 --from-file=username
+
+secret/mysecret2 created
+
+$ k describe secrets mysecret2
+
+Name:         mysecret2
+
+Namespace:    default
+
+Labels:       <none>
+
+Annotations:  <none>
+
+ 
+
+Type:  Opaque
+
+ 
+
+Data
+
+====
+
+username:  5 bytes
+
+$ k describe secrets mysecret2
+
+Name:         mysecret2
+
+Namespace:    default
+
+Labels:       <none>
+
+Annotations:  <none>
+
+ 
+
+Type:  Opaque
+
+ 
+
+Data
+
+====
+
+username:  5 bytes
+
+$ k describe secrets mysecret2^C
+
+$ k get secrets mysecret2 -o yaml
+
+apiVersion: v1
+
+data:
+
+  username: YWRtaW4=
+
+kind: Secret
+
+metadata:
+
+  creationTimestamp: "2021-03-06T22:20:27Z"
+
+  name: mysecret2
+
+  namespace: default
+
+  resourceVersion: "7016"
+
+  selfLink: /api/v1/namespaces/default/secrets/mysecret2
+
+  uid: fc115025-4fad-4372-b5a1-4cf21616ed1c
+
+type: Opaque
+
+$ echo YWRtaW4= | base64 -d
+
+admin$ k run nginx-secret-volume --image=nginx --restart=Never --dry-run -o yaml > nginx-secret-e.yaml
+
+$ ls
+
+config4.txt   config.txtecho          nginx-capability.yaml     'nginx-security=context.yaml'
+
+config.env    Desktop                 nginx-cmvolume.yaml        nginx.yaml
+
+config.txt    nginx-anotherone.yaml   nginx-secret-volume.yaml   username
+
+$ cat
+
+ 
+
+ 
+
+ca^C
+
+$ ^C
+
+$ vi nginx-secret-volume.yaml
+
+$ k apply -f nginx-secret-volume.yaml
+
+pod/nginx-secret-volume created
+
+$ k exec -it nginx-secret-volume -- sh
+
+# ls /etc/foo
+
+username
+
+# cat /etc/foo/username
+
+admin# hostname
+
+nginx-secret-volume
+
+# exit
+
+$ k exec -it nginx-secret-volume -- sh^C
+
+$ k delete po nginx-secret-volume
+
+pod "nginx-secret-volume" deleted
+
+$ vi nginx-secret-volume.yaml
+
+$ k apply -f nginx
+
+$
+
+ 
+
+ 
+
+1  minikube version
+
+    2  minikube start --wait=false
+
+    3  alias k=kubectl
+
+    4  complete -F __start_kubectl k
+
+   5  k get sa --all-namespaces
+
+    6  k create sa myuser
+
+    7  k run nginx --image=nginx --restar=Never --serviceaccount=myuser --dry-run -o yaml
+
+    8  k run nginx --image=nginx --restart=Never --serviceaccount=myuser --dry-run -o yaml
+
+    9  k run nginx --image=nginx --restart=Never --serviceaccount=myuser --dry-run -o yaml > pod.yml
+
+   10  k apply -f pod.yml
+
+   11  history
+
+ 
+
+----------
+
+Observability
+
+-----------
+
+ 
+
+$ history
+
+    1  minikube version
+
+    2  minikube start --wait=false
+
+    3  alias k=kubectl
+
+    4  complete -F __start_kubectl k
+
+    5  k run nginx --image=nginx --restart=Never --dry-run -o yaml > nginx-liveness.yaml
+
+    6  vi nginx-liveness.yaml
+
+    7  k apply -f nginx-liveness.yaml
+
+    8  k get po
+
+    9  k get po -w
+
+   10  k describe po nginx
+
+   11  k get ev | grep
+
+   12  k get ev | grep nginx
+
+   13  k describe po nginx | grep liveness
+
+   14  k describe po nginx | grep -i liveness
+
+   15  k delete po nginx
+
+   16  ~
+
+   17  k get po
+
+   18  k run nginx --image=nginx --restart=Never --port=80 --dry-run -o yaml > nginx-readiness.yaml
+
+   19  vi nginx-readiness.yaml
+
+   20  k apply  -f nginx-readiness.yaml
+
+   21  k get pod
+
+   22  k get pod -w
+
+   23  k describe pod nginx | grep -i readiness
+
+   24  k get po
+
+   25  k describe po nginx
+
+   26  k get ev | grep nginx
+
+   27  k get ev | grep liveness
+
+   28  k get ev | grep -i liveness
+
+   29  k get ev | grep -i readiness
+
+   30  k get ev
+
+   31  k run busybox --image=busybox --restart=Never --dry-run -o yaml --command -- sh -c '=0; while true; do echo "$i: $(date)"; i=$((i+1)); sleep 1; done'
+
+   32  k run busybox --image=busybox --restart=Never --dry-run -o yaml --command -- sh -c 'i=0; while true; do echo "$i: $(date)"; i=$((i+1)); sleep 1; done'
+
+   33  k run busybox --image=busybox --restart=Never --dry-run -o yaml --command -- sh -c 'i=0; while true; do echo "$i: $(date)"; i=$((i+1)); sleep 1; done' > busy.yaml
+
+   34  k apply -f busy.yaml
+
+   35  k get pod
+
+   36  k logs busybox
+
+   37  k logs busybox -f
+
+   38  k run busy2 --image=busybox --restart=Never --dry-run -o yaml --command -- sh -c 'ls /nonexist'
+
+   39  k run busy2 --image=busybox --restart=Never -o yaml --command -- sh -c 'ls /nonexist'
+
+   40  k logs busy
+
+   41  k logs busy2
+
+   42  k get po
+
+   43  k logs busy2
+
+   44  k describe po busy2
+
+   45  k delete po busy2
+
+   46  k run busy3 --image=busybox --restart=Never -- nonexist
+
+   47  k logs busy3
+
+   48  k get pod
+
+   49  k get ev
+
+   50  k get ev | grep busy3
+
+   51  k describe po busy3
+
+   52  k delete po busy3 --force --grace-period=0
+
+   53  k get pod
+
+   54  k top node
+
+   55  history
+
+$
+
+ 
+
+-------------------------
+
+ 
+
+-------------------------
+
+ 
+
+57  k get pod
+
+   58  k delete po --all
+
+   59  k run nginx --image=nginx --restart=Never
+
+   60  k get po
+
+   61  k expose po nginx --name nginx-service --port=80
+
+   62  k get svc
+
+   63  curl http://10.96.5.1
+
+   64  k get svc
+
+   65  k get ep
+
+   66  curl http://172.18.0.4:80
+
+   67  k get svc
+
+   68  curl 10.96.5.1
+
+   69  k run busy --image=busybox --restart=Never -it --rm -- wget 10.96.5.1
+
+   70  k run busy --image=busybox --restart=Never -it --rm -- wget -O- 10.96.5.1
+
+   71  k edit svc nginx-service
+
+   72  k get svc
+
+   73  k get ep
+
+   74  k get node
+
+   75  k get node -o wide
+
+   76  curl 172.17.0.9:31925
+
+   77  wget 172.17.0.9:31925
+
+   78  wget -O- 172.17.0.9:31925
+
+   79  k delete svc nginx-service
+
+   80  k get po nginx
+
+   81  k delete po nginx
+
+   82  k create deployment foo --image=dgkanatsios/simpleapp --replicas=3
+
+   83  k create deployment foo --image=dgkanatsios/simpleapp --dry-run -o yaml
+
+   84  k create deployment foo --image=dgkanatsios/simpleapp --dry-run -o yaml > deployment.yaml
+
+   85  vi deployment.yaml
+
+   86  k apply -f deployment.yaml
+
+   87  vi deployment.yaml
+
+   88  k apply -f deployment.yaml
+
+   89  k get all
+
+   90  k logs deploy foo
+
+   91  k logs foo-54d949bdc7-b
+
+   92  k get all
+
+   93  k logs pod/foo-54d949bdc7-b77fd
+
+   94  k log deployment.apps/foo
+
+   95  k logs deployment.apps/foo
+
+   96  kubectl create deploy foo --image=dgkanatsios/simpleapp --port=8080 --replicas=3
+
+   97  kubectl create deploy foo --image=dgkanatsios/simpleapp  --replicas=3
+
+   98  k get po -o wide
+
+   99  k get po
+
+  100  k run busy --image=busybox --rm --restart=Never -- sh
+
+  101  k run busy --image=busybox --rm -it --restart=Never -- sh
+
+  102  k expose deployment foo --name foo-service --port=6262
+
+  103  k get svc
+
+  104  curl 10.108.187.59:6262
+
+  105  k describe svc foo
+
+  106  k delete svc foo-service
+
+  107  k expose deployment foo --name foo-service --target-port=6262 --port=8080
+
+  108  k get svc
+
+  109  curl 10.106.83.158:8080
+
+  110  curl 10.106.83.158:6262
+
+  111  k delete svc foo-service
+
+  112  k expose deployment foo --name foo-service --target-port=8080 --port=6262
+
+  113  k get svc
+
+  114  curl 10.99.132.246:6262
+
+  115  k get ep
+
+  116  k describe svc foo-service
+
+  117  k get ep
+
+  118  k describe ep foo-service
+
+  119  histor
+
+  120  history
+
+ 
+
+ 
+
+6  k create deploy nginx --image=nginx --dry-run -o yaml > deploy2.yaml
+
+    7  vi deploy2.yaml
+
+    8  k apply -f deploy2.yaml
+
+    9  k expose deployment nginx --port=80
+
+   10  vi net_pol.yaml
+
+   11  k apply -f net_pol.yaml
+
+   12  vi net_pol.yaml
+
+   13  k apply -f net_pol.yaml
+
+   14  k describe networkpolicies.networking.k8s.io
+
+   15  k get po --show-
+
+   16  k get po --show-labels
+
+   17  cay net_pol.yaml
+
+   18  cat net_pol.yaml
+
+   19  k run busy --image=busybox --restart=Never --rm -it -- sh
+
+   20  k get svc
+
+   21  curl 10.111.185.101
+
+   22  k run busy --image=busybox --restart=Never --rm -it -- sh
+
+   23  k get all
+
+   24  k get networkpolicies.networking.k8s.io
+
+   25  k describe networkpolicies.networking.k8s.io net-pol
+
+   26  kubectl run busybox --image=busybox --rm -it --restart=Never -- wget -O- http://nginx:80 --timeout 2   
+
+   27  k describe networkpolicies.networking.k8s.io net-pol
+
+   28  k get po --show-
+
+   29  k get po --show-labels
+
+   30  k get deployments.apps --show-labels
+
+   31  vi net_pol.yaml
+
+ 
+
+ 
+
+$
+
+ 
+
+---------------
+
+Persistent state
+
+--------------
+
+ 
+
+$ history
+
+    1  minikube version
+
+    2  minikube start --wait=false
+
+    3  alias k=kubectl
+
+    4  complete -F __start_kubectl k
+
+    5  vi pv.yaml
+
+    6  k apply -f pv.yaml
+
+    7  k get pv
+
+    8  k get pv --all-namespaces
+
+    9  vi pvc.yaml
+
+   10  k apply -f pvc.yaml
+
+   11  k get pvc
+
+   12  k get pv
+
+   13  vi pvc.yaml
+
+   14  k apply -f pvc.yaml
+
+   15  k get pvc
+
+   16  k delete pvc mypvc2
+
+   17  k run busybox --image=busybox --restart=Never --dry-run -o yaml --command -- sh -c 'sleep 3600' > pod.yaml
+
+   18  vi pod.yaml
+
+   19  k apply -f pod.yaml
+
+   20  k get po
+
+   21  k get po -w
+
+   22  k exec  -it busybox -- sh
+
+   23  ls /etc/foo/
+
+   24  cat /etc/foo/passwd
+
+   25  k exec  -it busybox -- sh
+
+   26  cat /etc/foo/helloyoyo
+
+   27  vi pod.yaml
+
+   28  k apply -f pod.yaml
+
+   29  k get pod
+
+   30  k get pod -1
+
+   31  k get pod -w
+
+   32  k exec -it busybox2 -- sh
+
+   33  ls /etc/foo/
+
+   34  cat /etc/foo/duuuuu
+
+   35  k run busybox3 --image=busybx --restart=Never -- sleep 3600
+
+   36  pwd
+
+   37  k cp busybox3:/etc/passed ./hello
+
+   38  k cp busybox3:etc/passed ./hello
+
+   39  k get po
+
+   40  k delete po busybox3
+
+   41  k run busybox3 --image=busybox --restart=Never -- sleep 3600
+
+   42  k get po -w
+
+   43  k cp busybox3:/etc/passwd ./hello
+
+   44  ls
+
+   45  ls hello
+
+   46  cat hello
+
+   47  k run busy-1 --image=busybox --restart=Never --dry-run -o yaml --command -- sh -c 'sleep 3600'> pod-1.yaml
+
+   48  vi pod-1.yaml
+
+   49  k apply -f pod-1.yaml
+
+   50  k get pod
+
+   51  k get pod -w
+
+   52  vi pod-1.yaml
+
+   53  k exec -it busy-1 -c busy2 -- sh
+
+   54  k exec -it busy-1 -c busy1 -- sh
+
+   55  history
+
+$           

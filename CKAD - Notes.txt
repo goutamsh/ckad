@@ -1,0 +1,188 @@
+To know the version of the k8s resource u can use below command that is kubectl explain
+k explain rs | grep VERSION
+
+----------
+To edit the ReplicaSet u can use k edit rs, but then delete all the pods so that the new pods created will use the edited pod spec
+
+-----------
+
+To create deployment yaml we can use the imperative command like with --dry-run switch like below
+
+k create deploy deploy-name --image=busybox --replicas=3 --dry-run -o yaml > deploy.yaml
+------------
+
+To select line in vi
+Esc and then press V for selecting line; v for selecting char and then move up and down arrow to select the visual block
+then press y from yank and then select p for paste
+------------
+Faced difficulty in copy pasting in the vi if we do then the kubectl didn't recognize some white charachers
+then i ran command like ":set list" in the vi after pressing esc. Need to be careful on this part
+---------------
+After creating ingress and ingress controller to access the service behind the ingress, all we need to do is use the ingeress-controller service url as base.
+What this means is essentially the ingress-controller is a service which is exposed as a nodePort and we can access that. When we use the /path appended to ingress-controller service, that gets redirected to the service behind ingress.
+---------------
+ingress - host based routing
+https://kubernetes.github.io/ingress-nginx/user-guide/basic-usage/
+-----------
+CTRL + Insert for copy
+Shift + Insert for paste
+--------------
+using curl for checking all input and output headers and options
+curl --verbose -I https://flaviocopes.com/
+----------
+to configure the domain name to ip address in local machine we can edit the /etc/hosts file
+echo "12.13.45.65 hello" >> /etc/hosts
+after this we can refer to host as hello insted of ip 12.13.45.65
+-----------------
+For creating the ingress resource the ingress resource has to be defined in the same namespace as that of the service which needs to exposed.
+------------
+to go to specific line number in the vi
+Eg: To go to line no. 30
+Esc > :30
+-----------
+Ingress is another way of exposing a service when compared to NodePort or LoadBalancer service types.
+--------------
+to check what has changed in the deployment rollout use below command
+k rollout history deployment nginx --revision=5
+-----------------
+to rollback to the exact revision
+k rollout undo deployment nginx --to-revision=3
+---------------
+to set the record for any change in deployment rollout
+k --record=true set image deploy nginx nginx=nginx:1.7.9
+---------------
+to see logs we can use job or deploy
+
+k logs deploy/nginx
+k logs job/busy
+-----------------
+to have requests and limits in pod
+k run nginx-limit --image=nginx --restart=Never --requests='cpu=100m,memory=256Mi' --limits='cpu=200m,memory=512Mi' 
+-------------
+copy a file from pod to the local machine - Use kubectl cp command
+k cp <pod_name>:<pathfrom_container> <local_dir>
+k cp busybox3:etc/passed ./hello
+also
+k cp <local_dir> <some_pod>:/tmp/dir
+if u want to specity container and namespace
+
+k cp <local_dir> <some-namespace>/<some_pod>:/tmp/dir -c <container_name>
+-------------------
+9. Output the yaml file of the pod you just created without the cluster-specific information
+
+kubectl get po nginx -o yaml --export
+
+-------------------
+12. Delete the pod you just created without any delay (force delete)
+
+kubectl delete po nginx --grace-period=0 --force
+
+-------------------
+k explain ingress --recursive | less
+
+---------
+delete a single line in vi - Esc and then dd
+Delete from cursor to end of file - Esc then dG
+
+select all the text - Esc - ggvG - then to copy y
+
+---------
+
+to indent a block of text in vi
+
+Esc
+
+press v to entet into visual mode
+
+select the block of text to to indented
+
+then : it will show like :'<,'> then select press > so the end result would look like :'<,'>>>
+press enter
+
+----------
+to replace a pod we can use below command
+
+k replace -f file.yaml --force
+----------
+to set namespace in current context
+
+k config set-context --current --namespace=<my-namespace>
+-----------
+
+to use service created in diff namespace
+curl [http://my-service.%3cnamespace-in-which-this-service-creates%3e:%3cport-of-that-service]http://my-service.<namespace-in-which-this-service-creates>:<port-of-that-service>
+-------------
+Cronjob - keep last 4 successful/failed jobs in history. It's availble in cronjob task section of docs
+
+u can use .spec.successfulJobsHistoryLimit and .spec.failedJobsHistoryLimit
+
+.spec.startingdDeadlineSeconds: For example, if it is set to 200, it counts how many missed schedules occurred in the last 200 seconds. In that case, if there were more than 100 missed schedules in the last 200 seconds, the cron job is no longer scheduled
+
+
+.spec.concurrencyPolicy: Allow, Forbid and Replace
+---------------
+To run test like curl and nslookup for debug purpose use alpine image like below
+k run alpine --image=alpine -it --rm -- sh
+
+# apk update
+# apk add curl // install curl
+# apk add bind-tools //for installing nslookup
+---------
+QoS for Pod
+
+Guaranteed, Burstable and BestEffort
+
+QoS class of Guaranteed  is given when all containers specify memory request and limit and they are same like both request and limit value like "200Mi"
+and specity CPU request and limit and they are also same.
+
+QoS of Burstable is assigned when the pod does not meet criteria of Guranteed and atlest one of the containers specify memory requsts.
+
+QoS of BestEffort is given when no memory or cpu request or limit is specified.
+------------
+Commands/Points to remember during CKAD examp
+
+1. set below commands at the start
+--
+source <(kubectl completion bash)
+alias k=kubectl
+alias kaf="k apply -f"
+complete -F __start_kubectl k
+----
+export do="--dry-run=client -o yaml"
+-----
+vi ~/.vimrc
+
+set nu
+set ic
+set expandtab
+set tabstop=2
+set shiftwidth=2
+----
+For every  question
+
+set the correct context from the question
+set the namespace to the context - even if default as we might have set a diff namespace previously
+
+Read question properly
+
+try 2 attempts if it;s simple otherwise dont try to troubleshoot move on to another question
+
+----------
+
+Notes section of exam mark below sections:
+
+TO-DO:
+
+---
+
+Doubt:
+
+-----
+
+commands:
+
+k config set-context --current --namespace=dev
+
+---------
+
+ 
